@@ -6,6 +6,8 @@ import ch.maystre.gilbert.nrgc.io.Parser;
 import ch.maystre.gilbert.nrgc.io.Reader;
 import ch.maystre.gilbert.nrgc.pathfinders.SeparatePathsFinder;
 import ch.maystre.gilbert.nrgc.pathfinders.TreePathsFinder;
+import ch.maystre.gilbert.nrgc.solvers.AbstractNonRepetitiveSolver;
+import ch.maystre.gilbert.nrgc.solvers.ThueIndexSolver;
 import ch.maystre.gilbert.nrgc.solvers.ThueNumberSolver;
 import gurobi.GRBException;
 
@@ -18,14 +20,25 @@ public class Main {
         try {
             String path = "/Users/gilbert/Desktop/Tree6/tree6.3.txt";
             String fst = (new Reader(path)).readNextLines(1).get(0);
-            Graph g = Parser.parseTree(fst);
-            List<List<Integer>> allPaths = (new SeparatePathsFinder(g)).popEverything();
-            Log.printPaths(allPaths);
+            Graph tree = Parser.parseTree(fst);
 
+            /*
+             * compute the Thue index
+             */
+            List<List<Integer>> paths = TreePathsFinder.allPaths(tree);
+            ThueIndexSolver edgeSolver = new ThueIndexSolver(tree, paths);
+            Log.print(edgeSolver.compute());
 
+            /*
+             * compute the Thue number
+             */
+            ThueNumberSolver vertexSolver = new ThueNumberSolver(tree);
+            Log.print(vertexSolver.addSeparatePaths().compute());
         } catch (IOException e) {
             e.printStackTrace();
 
+        } catch (GRBException e) {
+            e.printStackTrace();
         }
     }
 

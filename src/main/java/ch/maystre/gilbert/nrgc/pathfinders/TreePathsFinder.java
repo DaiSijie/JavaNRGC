@@ -37,7 +37,7 @@ public class TreePathsFinder {
                     nHow.add(i);
                     toVisit.add(new Pair<>(i, nHow));
                     // do we have discovered a new path?
-                    if(s < i &&  nHow.size() % 2 == 0){
+                    if(s < i){
                         toReturn.add(nHow);
                     }
 
