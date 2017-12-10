@@ -1,0 +1,6 @@
+TODO:
+
+ -- Line graph computer
+ -- Clique computer (randomized)
+ -- Gap computer
+ -- Linker with SmartGraph
