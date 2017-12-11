@@ -1,8 +1,6 @@
 package ch.maystre.gilbert.nrgc.datastructures;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Graph {
 
@@ -20,6 +18,35 @@ public class Graph {
         this.caterpillar = caterpillar;
         this.largestEdgeClique = largestEdgeClique;
         this.neighbors = neighbors;
+    }
+
+    /*
+     * todo: make it performant
+     */
+    public Graph getLineGraph(){
+        int counter = 0;
+        HashMap<Edge, Integer> conversion = new HashMap<>();
+        for(Edge e: edges){
+            conversion.put(e, counter++);
+        }
+
+        Builder builder = new Builder(counter);
+        for(Edge e1 : edges){
+            for(Edge e2 : edges){
+                int a = e1.fst();
+                int b = e1.snd();
+                int c = e2.fst();
+                int d = e2.snd();
+                if(a == c || a == d || b == c || b == d){
+                    int i = conversion.get(e1);
+                    int j = conversion.get(e2);
+                    if(i < j){
+                        builder.addEdge(i, j);
+                    }
+                }
+            }
+        }
+        return builder.build();
     }
 
     public HashSet<Integer> neighborsOf(int vertex){
@@ -58,6 +85,7 @@ public class Graph {
         private boolean caterpillar;
         private Set<Integer> largestClique;
         private HashMap<Integer, HashSet<Integer>> neighbors;
+
 
         public Builder(int n){
             this.n = n;

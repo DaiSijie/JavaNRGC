@@ -1,6 +1,7 @@
 package ch.maystre.gilbert.nrgc.io;
 
 import ch.maystre.gilbert.nrgc.datastructures.Edge;
+import ch.maystre.gilbert.nrgc.datastructures.Graph;
 import ch.maystre.gilbert.nrgc.solvers.AbstractNonRepetitiveSolver;
 import ch.maystre.gilbert.nrgc.solvers.ThueIndexSolver;
 
@@ -51,6 +52,15 @@ public class Log {
         print("With " + solution.getNumberOfColors() + " color(s)");
         for(Map.Entry<Edge, Integer> e : solution.getColoring().entrySet()){
             print(" - edge (" + e.getKey().fst() + ", " + e.getKey().snd() + "): " + e.getValue());
+        }
+    }
+
+    public static void print(Graph graph){
+        print("=================");
+        print("Graph with " + graph.getN() + " vertices");
+        print("=================");
+        for(Edge e : graph.getEdges()){
+            print(" - edge (" + e.fst() + ", " + e.snd() + ")");
         }
     }
 

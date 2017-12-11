@@ -4,9 +4,7 @@ import ch.maystre.gilbert.nrgc.datastructures.Graph;
 import ch.maystre.gilbert.nrgc.io.Log;
 import ch.maystre.gilbert.nrgc.io.Parser;
 import ch.maystre.gilbert.nrgc.io.Reader;
-import ch.maystre.gilbert.nrgc.pathfinders.SeparatePathsFinder;
 import ch.maystre.gilbert.nrgc.pathfinders.TreePathsFinder;
-import ch.maystre.gilbert.nrgc.solvers.AbstractNonRepetitiveSolver;
 import ch.maystre.gilbert.nrgc.solvers.ThueIndexSolver;
 import ch.maystre.gilbert.nrgc.solvers.ThueNumberSolver;
 import gurobi.GRBException;
@@ -34,12 +32,28 @@ public class Main {
              */
             ThueNumberSolver vertexSolver = new ThueNumberSolver(tree);
             Log.print(vertexSolver.addSeparatePaths().compute());
+
+            /*
+             * compute the Line graph
+             */
+            Log.print("gap = " + treeGap(tree));
+
         } catch (IOException e) {
             e.printStackTrace();
 
         } catch (GRBException e) {
             e.printStackTrace();
         }
+    }
+
+    public static int treeGap(Graph tree) throws GRBException {
+        List<List<Integer>> paths = TreePathsFinder.allPaths(tree);
+        int index = (new ThueIndexSolver(tree, paths)).compute().getNumberOfColors();
+
+        Graph lGraph = tree.getLineGraph();
+        int number = new ThueNumberSolver(lGraph).addSeparatePaths().compute().getNumberOfColors();
+
+        return number - index;
     }
 
 
