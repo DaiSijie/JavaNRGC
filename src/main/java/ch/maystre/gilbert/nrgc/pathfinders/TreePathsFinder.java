@@ -16,7 +16,7 @@ public class TreePathsFinder {
 
     public static List<List<Integer>> allPaths(Graph g){
         List<List<Integer>> toReturn = new ArrayList<>();
-        for(int s = 0; s < g.getN(); s++){
+        for(int s = 0; s < g.size(); s++){
             toReturn.addAll(allPathsFromS(g, s));
         }
         return toReturn;
@@ -31,7 +31,7 @@ public class TreePathsFinder {
         while(toVisit.size() > 0){
             Pair<Integer, List<Integer>> visiting = toVisit.remove();
             visited.add(visiting.fst());
-            for(int i = 0; i < g.getN() ; i++){
+            for(int i = 0; i < g.size() ; i++){
                 if(!visited.contains(i) && g.hasEdge(new Edge(i, visiting.fst()))){
                     List<Integer> nHow = new ArrayList<>(visiting.snd());
                     nHow.add(i);

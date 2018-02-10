@@ -57,7 +57,7 @@ public class Log {
 
     public static void print(Graph graph){
         print("=================");
-        print("Graph with " + graph.getN() + " vertices");
+        print("Graph with " + graph.size() + " vertices");
         print("=================");
         for(Edge e : graph.getEdges()){
             print(" - edge (" + e.fst() + ", " + e.snd() + ")");

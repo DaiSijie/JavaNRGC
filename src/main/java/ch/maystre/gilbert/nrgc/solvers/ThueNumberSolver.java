@@ -17,7 +17,7 @@ public class ThueNumberSolver {
 
     public ThueNumberSolver(Graph graph){
         this.graph = graph;
-        this.solver = new AbstractNonRepetitiveSolver(graph.getN());
+        this.solver = new AbstractNonRepetitiveSolver(graph.size());
     }
 
     /**

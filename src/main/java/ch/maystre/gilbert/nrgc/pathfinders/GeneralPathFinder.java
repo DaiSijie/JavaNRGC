@@ -15,8 +15,8 @@ public class GeneralPathFinder {
 
     public List<List<Integer>> findAllPaths(){
         List<List<Integer>> toReturn = new ArrayList<>();
-        for(int s = 0; s < graph.getN(); s++){
-            for(int t = s + 1; t < graph.getN(); t++){
+        for(int s = 0; s < graph.size(); s++){
+            for(int t = s + 1; t < graph.size(); t++){
                 toReturn.addAll(allStPaths(s, t));
             }
         }

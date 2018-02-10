@@ -57,7 +57,7 @@ public class Graph {
         return edges.contains(e);
     }
 
-    public int getN() {
+    public int size() {
         return n;
     }
 
