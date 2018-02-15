@@ -4,15 +4,15 @@ import java.util.*;
 
 public class Graph {
 
-    private final int n;
+    private final int size;
     private final Set<Edge> edges;
     private final int[] multiplicities;
     private final boolean caterpillar;
     private final Set<Edge> largestEdgeClique;
     private final HashMap<Integer, HashSet<Integer>> neighbors;
 
-    private Graph(int n, Set<Edge> edges, int[] multiplicities, boolean caterpillar, Set<Edge>largestEdgeClique, HashMap<Integer, HashSet<Integer>> neighbors ){
-        this.n = n;
+    private Graph(int size, Set<Edge> edges, int[] multiplicities, boolean caterpillar, Set<Edge>largestEdgeClique, HashMap<Integer, HashSet<Integer>> neighbors){
+        this.size = size;
         this.edges = edges;
         this.multiplicities = multiplicities;
         this.caterpillar = caterpillar;
@@ -58,7 +58,7 @@ public class Graph {
     }
 
     public int size() {
-        return n;
+        return size;
     }
 
     public Set<Edge> getEdges() {

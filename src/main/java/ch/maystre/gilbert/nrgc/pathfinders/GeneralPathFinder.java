@@ -4,34 +4,33 @@ import ch.maystre.gilbert.nrgc.datastructures.Graph;
 
 import java.util.*;
 
+/**
+ * This class finds all the simple paths in a graph. It runs in linear time for the
+ * number of paths (which indeed is exponential).
+ */
 public class GeneralPathFinder {
 
-    private final Graph graph;
+    private GeneralPathFinder(){}
 
-    public GeneralPathFinder(Graph graph){
-        this.graph = graph;
-
-    }
-
-    public List<List<Integer>> findAllPaths(){
+    public static List<List<Integer>> findAllPaths(Graph graph){
         List<List<Integer>> toReturn = new ArrayList<>();
         for(int s = 0; s < graph.size(); s++){
             for(int t = s + 1; t < graph.size(); t++){
-                toReturn.addAll(allStPaths(s, t));
+                toReturn.addAll(allSTPaths(s, t, graph));
             }
         }
         return toReturn;
     }
 
-    private List<List<Integer>> allStPaths(int s, int t){
-        List<List<Integer>> r = rAllStPaths(s, t, Collections.singleton(s));
+    private static List<List<Integer>> allSTPaths(int s, int t, Graph graph){
+        List<List<Integer>> r = rAllSTPaths(s, t, Collections.singleton(s), graph);
         for(List<Integer> path : r){
             path.add(s);
         }
         return r;
     }
 
-    private List<List<Integer>> rAllStPaths(int s, int t, Set<Integer> visited){
+    private static List<List<Integer>> rAllSTPaths(int s, int t, Set<Integer> visited, Graph graph){
         List<List<Integer>> toReturn = new ArrayList<>();
         for(int v : graph.neighborsOf(s)){
             if(!visited.contains(v)){
@@ -43,7 +42,7 @@ public class GeneralPathFinder {
                 else{
                     HashSet<Integer> nVisited = new HashSet<>(visited);
                     nVisited.add(v);
-                    List<List<Integer>> paths = rAllStPaths(v, t, nVisited);
+                    List<List<Integer>> paths = rAllSTPaths(v, t, nVisited, graph);
                     for(List<Integer> path : paths){
                         path.add(v);
                         toReturn.add(path);

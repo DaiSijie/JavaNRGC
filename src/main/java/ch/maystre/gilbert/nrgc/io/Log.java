@@ -3,7 +3,7 @@ package ch.maystre.gilbert.nrgc.io;
 import ch.maystre.gilbert.nrgc.datastructures.Edge;
 import ch.maystre.gilbert.nrgc.datastructures.Graph;
 import ch.maystre.gilbert.nrgc.solvers.AbstractNonRepetitiveSolver;
-import ch.maystre.gilbert.nrgc.solvers.ThueIndexSolver;
+import ch.maystre.gilbert.nrgc.solvers.EdgeNonRepetitiveColoringFinder;
 
 import java.util.List;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class Log {
         }
     }
 
-    public static void print(ThueIndexSolver.EdgeNonRepetitiveColoring solution){
+    public static void print(EdgeNonRepetitiveColoringFinder.EdgeNonRepetitiveColoring solution){
         print("=================");
         print("Coloring solution");
         print("=================");

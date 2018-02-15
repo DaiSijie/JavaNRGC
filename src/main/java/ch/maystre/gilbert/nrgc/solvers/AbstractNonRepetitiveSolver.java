@@ -1,11 +1,8 @@
 package ch.maystre.gilbert.nrgc.solvers;
 
-import ch.maystre.gilbert.nrgc.io.Log;
 import gurobi.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * A class that solves an instance of something non-repetitively. Variables are integer from 0...n-1 the number is given
@@ -14,19 +11,25 @@ import java.util.List;
  */
 public class AbstractNonRepetitiveSolver {
 
-    private int numberOfVars;
+    private final int numberOfVars;
+
     private int maxNumberOfColors;
+
     private List<List<Integer>> nonRepetitiveConstraints;
+
+    private Set<Integer> exclusiveSet; // the cliques
 
     public AbstractNonRepetitiveSolver(int numberOfVars){
         this.numberOfVars = numberOfVars;
         this.maxNumberOfColors = numberOfVars;
         this.nonRepetitiveConstraints = new ArrayList<>();
+        this.exclusiveSet = new HashSet<>();
     }
 
     public NonRepetitiveSolution compute() throws GRBException {
         GRBEnv env = new GRBEnv();
         GRBModel model = new GRBModel(env);
+        model.set(GRB.IntParam.OutputFlag, 0);
 
         /*
          * 1: Prepare variables
@@ -70,7 +73,6 @@ public class AbstractNonRepetitiveSolver {
         }
 
         // each Z is set
-
         for(int j = 0; j < numberOfVars; j++){
             for(int k = j + 1; k < numberOfVars; k++){
                 for(int c = 0; c < maxNumberOfColors; c++){
@@ -98,7 +100,20 @@ public class AbstractNonRepetitiveSolver {
         }
 
         /*
-         * 4: Solve
+         * 4: Prepare exclusivity (clique) constraints
+         */
+
+        counter = 0;
+        for(int exclusive : exclusiveSet){
+            for(int c = 0; c < maxNumberOfColors; c++){
+                model.addConstr(x[c][exclusive], GRB.EQUAL, c == counter ? 1 : 0, "hello");
+            }
+            model.addConstr(y[counter], GRB.EQUAL, 1, "hello");
+            counter++;
+        }
+
+        /*
+         * 5: Solve
          */
 
         GRBLinExpr objective = new GRBLinExpr();
@@ -113,7 +128,7 @@ public class AbstractNonRepetitiveSolver {
         double[][] xv = model.get(GRB.DoubleAttr.X, x);
 
         /*
-         * 5: End computation and return
+         * 6: End computation and return
          */
 
         model.dispose();
@@ -122,17 +137,32 @@ public class AbstractNonRepetitiveSolver {
         return new NonRepetitiveSolution(xv);
     }
 
-
+    /**
+     * Sets the maximum number of colors. Having this small will reduce the computation time
+     *
+     * @param maxNumberOfColors the maximum number of colors
+     */
     public void setMaxNumberOfColors(int maxNumberOfColors){
         this.maxNumberOfColors = maxNumberOfColors;
     }
 
     /**
      * Sets the non-repetitive sequence of variable that must be non-repetitive
-     * @param nonRepetitiveConstraints The sequences. All odd-length sequence will be removed
+     *
+     * @param nonRepetitiveConstraints the sequences. All odd-length sequence will be removed
      */
     public void setNonRepetitiveConstraints(List<List<Integer>> nonRepetitiveConstraints){
         this.nonRepetitiveConstraints = nonRepetitiveConstraints;
+    }
+
+    /**
+     * Sets the set of variable that must have a different color. This can greatly speed-up
+     * the computation time. In the case of graph coloring, it might be a clique for instance.
+     *
+     * @param exclusiveSet the set of variable that must all have some exclusive colors
+     */
+    public void setExclusiveSet(Set<Integer> exclusiveSet){
+        this.exclusiveSet = exclusiveSet;
     }
 
     private static GRBVar getZFor(int a, int b, GRBVar[][] z){
@@ -142,7 +172,9 @@ public class AbstractNonRepetitiveSolver {
     public static class NonRepetitiveSolution {
 
         private final int numberOfColors;
+
         private final int numberOfVars;
+
         private final int[] colorOf;
 
         private NonRepetitiveSolution(double[][] x){

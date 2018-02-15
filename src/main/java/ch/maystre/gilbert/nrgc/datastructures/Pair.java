@@ -22,4 +22,8 @@ public class Pair<S, T> {
         return snd;
     }
 
+    public String toString(){
+        return "(" + fst + ", " + snd + ")";
+    }
+
 }

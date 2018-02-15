@@ -1,21 +1,22 @@
 package ch.maystre.gilbert.nrgc.solvers;
 
 import ch.maystre.gilbert.nrgc.datastructures.Graph;
+import ch.maystre.gilbert.nrgc.graphproperties.GraphUtils;
 import ch.maystre.gilbert.nrgc.pathfinders.SeparatePathsFinder;
 import gurobi.GRBException;
 
 import java.util.List;
+import java.util.Set;
 
-public class ThueNumberSolver {
+public class VertexNonRepetitiveColoringFinder {
 
     private Graph graph;
-
 
     private List<List<Integer>> paths;
 
     private AbstractNonRepetitiveSolver solver;
 
-    public ThueNumberSolver(Graph graph){
+    public VertexNonRepetitiveColoringFinder(Graph graph){
         this.graph = graph;
         this.solver = new AbstractNonRepetitiveSolver(graph.size());
     }
@@ -25,7 +26,7 @@ public class ThueNumberSolver {
      *
      * @return This instance
      */
-    public ThueNumberSolver addSeparatePaths(){
+    public VertexNonRepetitiveColoringFinder addSeparatePaths(){
         solver.setNonRepetitiveConstraints((new SeparatePathsFinder(graph)).popEverything());
         return this;
     }
@@ -33,10 +34,10 @@ public class ThueNumberSolver {
     /**
      * Sets the paths to consider
      *
-     * @param paths The paths that cannot be repetitive
-     * @return This instance
+     * @param paths the paths that cannot be repetitive
+     * @return this instance
      */
-    public ThueNumberSolver setPaths(List<List<Integer>> paths){
+    public VertexNonRepetitiveColoringFinder setPaths(List<List<Integer>> paths){
         solver.setNonRepetitiveConstraints(paths);
         return this;
     }
@@ -44,21 +45,32 @@ public class ThueNumberSolver {
     /**
      * Finds a large clique to accelerate the computation
      *
-     * @return This instance
+     * @return this instance
      */
-    public ThueNumberSolver computeLargeClique(){
-        //todo add clique support
+    public VertexNonRepetitiveColoringFinder computeLargeClique(){
+        solver.setExclusiveSet(GraphUtils.largeClique(graph));
+        return this;
+    }
+
+    /**
+     *  Sets the largest clique to speedup the computation
+     *
+     * @param clique the clique to consider
+     * @return this instance
+     */
+    public VertexNonRepetitiveColoringFinder setLargestClique(Set<Integer> clique){
+        solver.setExclusiveSet(clique);
         return this;
     }
 
     /**
      * Sets the maximum number of colors that the solution can use. By default it's the number of vertices.
      *
-     * @param maxNumberOfColors The maximum number of color usable
+     * @param maxNumberOfColors The maximum number of usable colors
      *
      * @return This instance
      */
-    public ThueNumberSolver setMaxNumberOfColors(int maxNumberOfColors){
+    public VertexNonRepetitiveColoringFinder setMaxNumberOfColors(int maxNumberOfColors){
         solver.setMaxNumberOfColors(maxNumberOfColors);
         return this;
     }

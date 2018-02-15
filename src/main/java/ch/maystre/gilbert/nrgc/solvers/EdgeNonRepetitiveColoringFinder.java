@@ -10,21 +10,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ThueIndexSolver{
+public class EdgeNonRepetitiveColoringFinder {
 
     private final Graph graph;
     private final HashMap<Edge, Integer> fwd;
     private final HashMap<Integer, Edge> bkw;
     private final AbstractNonRepetitiveSolver solver;
 
-    public ThueIndexSolver(Graph graph, List<List<Integer>> paths){
+    public EdgeNonRepetitiveColoringFinder(Graph graph){
         this.graph = graph;
         fwd = new HashMap<>();
         bkw = new HashMap<>();
         solver = new AbstractNonRepetitiveSolver(graph.getEdges().size());
 
         buildMaps();
-        addPaths(paths);
     }
 
     public EdgeNonRepetitiveColoring compute() throws GRBException {
@@ -41,7 +40,7 @@ public class ThueIndexSolver{
         }
     }
 
-    private void addPaths(List<List<Integer>> paths){
+    public void addPaths(List<List<Integer>> paths){
         List<List<Integer>> nPaths = new ArrayList<>();
         for(List<Integer> path : paths){
             if(path.size() % 2 == 1){
